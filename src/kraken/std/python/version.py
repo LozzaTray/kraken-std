@@ -21,7 +21,7 @@ def git_version_to_python_version(value: str | GitVersion, include_sha: bool) ->
     if version.pre_release:
         final_version = f"{final_version}{_PRE_RELEASE_NAMES[version.pre_release.kind]}{version.pre_release.value}"
     if version.distance:
-        final_version += f".dev{version.distance.value}"
+        final_version += f".post0.dev{version.distance.value}"
         if include_sha:
             final_version += f"+g{version.distance.sha}"
             if version.dirty:
