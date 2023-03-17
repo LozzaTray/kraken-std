@@ -18,3 +18,10 @@ type = "fix"
 description = "Fix: Python development versions are now released as `.post0.devN` instead of `.devN`, to order them behind the tag they're based on."
 author = "@j-baker"
 pr = "https://github.com/kraken-build/kraken-std/pull/98"
+
+[[entries]]
+id = "3abfd80c-20a5-4455-bb64-a33ed5209fac"
+type = "improvement"
+description = "Added a copyright task for calling pyaddlicense"
+author = "michael.coward@helsing.ai"
+pr = "https://github.com/kraken-build/kraken-std/pull/114"

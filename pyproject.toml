@@ -20,6 +20,7 @@ keywords = []
 # Repository = ""
 
 [tool.poetry.dependencies]
+pyaddlicense = "^0.2.1"
 python = "^3.7"
 databind-json = "^2.0.7"
 deprecated = "^1.2.13"
