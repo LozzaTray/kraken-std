@@ -32,3 +32,10 @@ type = "improvement"
 description = "Add a `cargoDeny` task"
 author = "trinquier.nico@gmail.com"
 pr = "https://github.com/kraken-build/kraken-std/pull/118"
+
+[[entries]]
+id = "62e53bc6-46fe-44ef-a7ed-6f91c8a8f11b"
+type = "improvement"
+description = "Add a config file param to the `cargoDeny` task"
+author = "trinquier.nico@gmail.com"
+pr = "https://github.com/kraken-build/kraken-std/pull/119"

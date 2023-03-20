@@ -148,9 +148,13 @@ def cargo_clippy(
     return task
 
 
-def cargo_deny(checks: Optional[Sequence[str]] = None, project: Project | None = None) -> CargoDenyTask:
+def cargo_deny(
+    checks: Optional[Sequence[str]] = None,
+    config_file: Optional[Path] = None,
+    project: Project | None = None,
+) -> CargoDenyTask:
     project = project or Project.current()
-    return project.do("cargoDeny", CargoDenyTask, checks=checks)
+    return project.do("cargoDeny", CargoDenyTask, checks=checks, config_file=config_file)
 
 
 def cargo_fmt(*, all_packages: bool = False, project: Project | None = None) -> None:
