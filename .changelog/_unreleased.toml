@@ -1,6 +1,6 @@
 [[entries]]
 id = "c35a9d23-2db1-4dd0-8e04-088931ee0c9c"
-type = "improvement"
+type = "breaking change"
 description = "Updated .gitignore task to generate a comprehensive global .gitignore"
 author = "luke.bax@talktalk.net"
 pr = "https://github.com/kraken-build/kraken-std/pull/115"
