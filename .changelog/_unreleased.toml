@@ -20,6 +20,13 @@ author = "@j-baker"
 pr = "https://github.com/kraken-build/kraken-std/pull/98"
 
 [[entries]]
+id = "eb334a1d-dfe5-427b-b791-7b5b43be9f1b"
+type = "feature"
+description = "Support python mono repositories by updating local dependencies with release version"
+author = "fabio.baravalle@gmail.com"
+pr = "https://github.com/kraken-build/kraken-std/pull/113"
+
+[[entries]]
 id = "3abfd80c-20a5-4455-bb64-a33ed5209fac"
 type = "improvement"
 description = "Added a copyright task for calling pyaddlicense"

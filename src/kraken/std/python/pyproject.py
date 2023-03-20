@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import re
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Dict, Iterator, MutableMapping
@@ -53,6 +54,36 @@ class Pyproject(MutableMapping[str, Any]):
 
     def get_poetry_sources(self) -> list[dict[str, Any]]:
         return list(self._poetry_section().setdefault("source", []))
+
+    def _find_dependencies_definitions(self, pyproject_section: Dict[str, Any], version: str) -> None:
+        """
+        Finds and updates the version of local dependencies listed in the
+        "dev-dependencies" and "dependencies" sections of the PyProject.toml file.
+
+        Args:
+            pyproject_section (Dict[str, Any]): A dictionary representing a section of the PyProject.toml file.
+            version (str): The version to update local dependencies with.
+        """
+        pattern = re.compile("^(dev-)?dependencies$")
+        for key, value in pyproject_section.items():
+            if pattern.match(key):
+                if type(value) == dict:
+                    self._update_dependencies_version(value, version)
+                pass
+            else:
+                if type(value) is dict:
+                    self._find_dependencies_definitions(value, version)
+
+    def _update_dependencies_version(self, obj: Dict[str, Any], version: str) -> None:
+        for _key, value in obj.items():
+            if type(value) == dict:
+                if "path" in value and "develop" in value:
+                    del value["path"]
+                    del value["develop"]
+                    value["version"] = version
+
+    def update_relative_packages(self, version: str) -> None:
+        self._find_dependencies_definitions(self._poetry_section(), version)
 
     def delete_poetry_source(self, source_name: str) -> None:
         sources_conf = self._poetry_section().setdefault("source", [])
