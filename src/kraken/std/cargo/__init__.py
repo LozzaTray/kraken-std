@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Collection, Sequence
+from typing import Collection, Optional, Sequence
 
 from kraken.core.api import Project
 from nr.stream import Supplier
@@ -15,6 +15,7 @@ from .tasks.cargo_build_task import CargoBuildTask
 from .tasks.cargo_bump_version_task import CargoBumpVersionTask
 from .tasks.cargo_check_toolchain_version import CargoCheckToolchainVersionTask
 from .tasks.cargo_clippy_task import CargoClippyTask
+from .tasks.cargo_deny_task import CargoDenyTask
 from .tasks.cargo_fmt_task import CargoFmtTask
 from .tasks.cargo_publish_task import CargoPublishTask
 from .tasks.cargo_sync_config_task import CargoSyncConfigTask
@@ -26,6 +27,7 @@ __all__ = [
     "cargo_build",
     "cargo_bump_version",
     "cargo_clippy",
+    "cargo_deny",
     "cargo_fmt",
     "cargo_publish",
     "cargo_registry",
@@ -35,6 +37,7 @@ __all__ = [
     "CargoBuildTask",
     "CargoBumpVersionTask",
     "CargoClippyTask",
+    "CargoDenyTask",
     "CargoProject",
     "CargoPublishTask",
     "CargoRegistry",
@@ -143,6 +146,11 @@ def cargo_clippy(
     task.add_relationship(f":{CARGO_BUILD_SUPPORT_GROUP_NAME}?")
 
     return task
+
+
+def cargo_deny(checks: Optional[Sequence[str]] = None, project: Project | None = None) -> CargoDenyTask:
+    project = project or Project.current()
+    return project.do("cargoDeny", CargoDenyTask, checks=checks)
 
 
 def cargo_fmt(*, all_packages: bool = False, project: Project | None = None) -> None:

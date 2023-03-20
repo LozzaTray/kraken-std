@@ -25,3 +25,10 @@ type = "improvement"
 description = "Added a copyright task for calling pyaddlicense"
 author = "michael.coward@helsing.ai"
 pr = "https://github.com/kraken-build/kraken-std/pull/114"
+
+[[entries]]
+id = "62e53bc6-46fe-44ef-a7ed-6f91c8a8f11a"
+type = "improvement"
+description = "Add a `cargoDeny` task"
+author = "trinquier.nico@gmail.com"
+pr = "https://github.com/kraken-build/kraken-std/pull/118"
