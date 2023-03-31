@@ -24,3 +24,5 @@ DEFAULT_GITIGNORE_TOKENS = [
     "node",
     "yarn",
 ]
+
+DEFAULT_KRAKEN_GITIGNORE_OVERRIDES = ["Cargo.lock", "poetry.lock"]

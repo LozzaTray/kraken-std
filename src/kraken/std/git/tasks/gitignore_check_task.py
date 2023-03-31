@@ -8,7 +8,12 @@ from kraken.core.api import Project, Property, Task, TaskStatus
 from termcolor import colored
 
 from ..gitignore import GitignoreException, GitignoreFile
-from .const import DEFAULT_KRAKEN_GITIGNORE_PATHS, GITIGNORE_TASK_NAME
+from .const import (
+    DEFAULT_GITIGNORE_TOKENS,
+    DEFAULT_KRAKEN_GITIGNORE_OVERRIDES,
+    DEFAULT_KRAKEN_GITIGNORE_PATHS,
+    GITIGNORE_TASK_NAME,
+)
 
 
 def as_bytes(v: str | bytes, encoding: str) -> bytes:
@@ -21,10 +26,11 @@ class GitignoreCheckTask(Task):
     """
 
     file: Property[Path]
-    tokens: Property[Sequence[str]]
     sort_paths: Property[bool] = Property.config(default=True)
     sort_groups: Property[bool] = Property.config(default=False)
-    kraken_paths: Sequence[str] = DEFAULT_KRAKEN_GITIGNORE_PATHS
+    tokens: Property[Sequence[str]] = Property.config(default=DEFAULT_GITIGNORE_TOKENS)
+    kraken_paths: Property[Sequence[str]] = Property.config(default=DEFAULT_KRAKEN_GITIGNORE_PATHS)
+    kraken_overrides: Property[Sequence[str]] = Property.config(default=DEFAULT_KRAKEN_GITIGNORE_OVERRIDES)
 
     def __init__(self, name: str, project: Project) -> None:
         super().__init__(name, project)
@@ -45,7 +51,9 @@ class GitignoreCheckTask(Task):
             gitignore = GitignoreFile.parse(file)
             if not gitignore.check_generated_content_hash():
                 return TaskStatus.failed(f'generated section of file "{file_fmt}" was modified{message_suffix}')
-            if not gitignore.check_generation_parameters(tokens=self.tokens.get(), extra_paths=self.kraken_paths):
+            if not gitignore.check_generation_parameters(
+                tokens=self.tokens.get(), extra_paths=self.kraken_paths.get(), overrides=self.kraken_overrides.get()
+            ):
                 return TaskStatus.failed(f'file "{file_fmt}" is not up to date, call `kraken run apply` to fix')
 
             unsorted = gitignore.render()

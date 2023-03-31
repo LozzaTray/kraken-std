@@ -57,8 +57,8 @@ def hash_content(content: str) -> str:
     return hashlib.sha256(content.encode("utf-8")).hexdigest()
 
 
-def hash_parameters(tokens: Sequence[str], extra_paths: Sequence[str]) -> str:
-    return hash_content(",".join([*tokens, *extra_paths]))
+def hash_parameters(tokens: Sequence[str], extra_paths: Sequence[str], overrides: Sequence[str]) -> str:
+    return hash_content(",".join([*tokens, *extra_paths, *overrides]))
 
 
 class GitignoreFile:
@@ -110,7 +110,9 @@ class GitignoreFile:
         user_content = map(str, self.entries)
         return "\n".join(guarded_section) + "\n" + "\n".join(user_content) + "\n"
 
-    def refresh_generated_content(self, tokens: Sequence[str], extra_paths: Sequence[str]) -> None:
+    def refresh_generated_content(
+        self, tokens: Sequence[str], extra_paths: Sequence[str], overrides: Sequence[str]
+    ) -> None:
         result = httpx.get(GITIGNORE_API_URL + ",".join(tokens))
         if result.status_code != 200:
             raise GitignoreException(f"Error status code returned from {GITIGNORE_API_URL}")
@@ -120,14 +122,19 @@ class GitignoreFile:
         # all \r chars are removed proactively
         fetched_content = result.text.replace("\r", "")
 
-        self.parameters_hash = hash_parameters(tokens, extra_paths)
+        overrides_set = set(overrides)
+        processed_lines = [
+            f"# KRAKEN_OVERRIDE: {line}" if line in overrides_set else line for line in fetched_content.split("\n")
+        ]
+
+        self.parameters_hash = hash_parameters(tokens, extra_paths, overrides)
 
         self.generated_content = "\n".join(
             [
                 GENERATED_GUARD_DESCRIPTION,
                 PARAMETER_HASH_TEMPLATE.format(hash=self.parameters_hash),
                 "",
-                fetched_content,
+                "\n".join(processed_lines),
                 "# Extra paths",  # todo(daviud): name
                 *extra_paths,
                 "# -------------------------------------------------------------------------------------------------",
@@ -137,8 +144,10 @@ class GitignoreFile:
     def refresh_generated_content_hash(self) -> None:
         self.generated_content_hash = hash_content(self.generated_content)
 
-    def check_generation_parameters(self, tokens: Sequence[str], extra_paths: Sequence[str]) -> bool:
-        return self.parameters_hash == hash_parameters(tokens, extra_paths)
+    def check_generation_parameters(
+        self, tokens: Sequence[str], extra_paths: Sequence[str], overrides: Sequence[str]
+    ) -> bool:
+        return self.parameters_hash == hash_parameters(tokens, extra_paths, overrides)
 
     def check_generated_content_hash(self) -> bool:
         return self.generated_content_hash == hash_content(self.generated_content)
