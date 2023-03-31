@@ -34,6 +34,11 @@ class PythonBuildSystem(abc.ABC):
     @abc.abstractmethod
     def update_pyproject(self, settings: PythonSettings, pyproject: Pyproject) -> None:
         """A chance to permanently update the Pyproject configuration."""
+    
+    @abc.abstractmethod
+    def check_lockfile(self, settings: PythonSettings, pyproject: Pyproject) -> TaskStatus:
+        """Check that the given lockfile is up to date. This is much faster to
+        execute than a full lockfile update."""
 
     @abc.abstractmethod
     def update_lockfile(self, settings: PythonSettings, pyproject: Pyproject) -> TaskStatus:

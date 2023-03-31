@@ -42,6 +42,11 @@ class PoetryPythonBuildSystem(PythonBuildSystem):
             if index.is_package_source:
                 pyproject.upsert_poetry_source(index.alias, index.index_url, index.default, not index.default)
 
+    def check_lockfile(self, settings: PythonSettings, pyproject: Pyproject) -> TaskStatus:
+        command = ["poetry", "lock", "--check"]
+        sp.check_call(command, cwd=self.project_directory)
+        return TaskStatus.succeeded()
+
     def update_lockfile(self, settings: PythonSettings, pyproject: Pyproject) -> TaskStatus:
         command = ["poetry", "update"]
         sp.check_call(command, cwd=self.project_directory)

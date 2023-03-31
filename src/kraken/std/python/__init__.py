@@ -1,6 +1,7 @@
 from .settings import PythonSettings, python_settings
 from .tasks.black_task import BlackTask, black
 from .tasks.build_task import BuildTask, build
+from .tasks.check_lockfile_task import check_lockfile_task
 from .tasks.flake8_task import Flake8Task, flake8
 from .tasks.install_task import InstallTask, install
 from .tasks.isort_task import IsortTask, isort
@@ -23,6 +24,7 @@ __all__ = [
     "BlackTask",
     "build",
     "BuildTask",
+    "check_lockfile_task",
     "flake8",
     "Flake8Task",
     "git_version_to_python_version",

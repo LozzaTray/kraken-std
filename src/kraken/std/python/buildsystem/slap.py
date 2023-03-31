@@ -41,6 +41,10 @@ class SlapPythonBuildSystem(PythonBuildSystem):
     def update_pyproject(self, settings: PythonSettings, pyproject: Pyproject) -> None:
         if "poetry" in pyproject.get("tool", {}):
             PoetryPythonBuildSystem(self.project_directory).update_pyproject(settings, pyproject)
+    
+    def check_lockfile(self, settings: PythonSettings, pyproject: Pyproject) -> None:
+        if "poetry" in pyproject.get("tool", {}):
+            PoetryPythonBuildSystem(self.project_directory).check_lockfile(settings, pyproject)
 
     def update_lockfile(self, settings: PythonSettings, pyproject: Pyproject) -> TaskStatus:
         return TaskStatus.skipped("not supported")
